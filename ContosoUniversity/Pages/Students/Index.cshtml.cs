@@ -12,15 +12,17 @@ namespace ContosoUniversity.Pages.Students
 {
     public class IndexModel : PageModel
     {
-        private readonly ContosoUniversity.Data.SchoolContext _context;
+        // Adicionei esse contexto para pegar a quantidade inicial de alunos
+        private readonly SchoolContext _context;
 
-        public IndexModel(ContosoUniversity.Data.SchoolContext context)
+        public IndexModel(SchoolContext context)
         {
             _context = context;
         }
 
         public IList<Student> Student { get;set; } = default!;
 
+        // Aqui devemos mandar pro index a quantidade de alunos na hora que a chamada foi feita
         public async Task OnGetAsync()
         {
             Student = await _context.Students.ToListAsync();

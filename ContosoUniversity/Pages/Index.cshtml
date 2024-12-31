@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model ContosoUniversity.Pages.Students.IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
@@ -43,3 +43,7 @@
         </div>
     </div>
 </div>
+<h2>Atualmente existem <span id="studentAmount">@Model.Student.Count</span> alunos no banco de dados</h2>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/updateStudentCount.js"></script>

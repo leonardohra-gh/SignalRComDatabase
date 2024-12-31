@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using ContosoUniversity.Hubs;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ContosoUniversity.Pages.Students
 {
     public class CreateModel : PageModel
     {
-        private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly SchoolContext _context;
+        private readonly IHubContext<StudentsHub> _hubContext;
 
-        public CreateModel(ContosoUniversity.Data.SchoolContext context)
+        public CreateModel(SchoolContext context, IHubContext<StudentsHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public IActionResult OnGet()
@@ -37,6 +42,11 @@ namespace ContosoUniversity.Pages.Students
 
             _context.Students.Add(Student);
             await _context.SaveChangesAsync();
+
+            // Pegar a nova quantidade de alunos
+            var newStudentCount = await _context.Students.CountAsync();
+            // Mandar o hub notificar os clientes
+            await _hubContext.Clients.All.SendAsync("UpdateStudentCount", newStudentCount);
 
             return RedirectToPage("./Index");
         }
